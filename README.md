@@ -1,8 +1,12 @@
-# wakayamarb.org_spec
-serversepecでのwakayamarb.orgのテスト
+# wakayamarb.orgの構成テスト
+これは、[serversepec](http://serverspec.org/)でのサーバ構成のテスト
 
-## プロビジョニング
+## ライブラリの準備
 `bundle install`
+
+## テストを実行できるユーザ・環境・条件
+- このテストを実行するマシン上の秘密鍵で、当該サーバにSSHできること
+- sudoer（serviceが稼働しているかなどをチェックするため）
 
 ## テスト実行
 
