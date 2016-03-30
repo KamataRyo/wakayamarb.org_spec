@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-rails_user = 'railswrb'
+rails_username = 'railswrb'
 ruby_version = '2.3.0'
 
 
-# ユーザ #{rails_user}が存在する
-describe user(rails_user) do
+# ユーザ #{rails_username}が存在する
+describe user(rails_username) do
   it { should exist }
 end
 
@@ -14,6 +14,7 @@ end
 apt_packages = %w{
   ufw
   apache2
+  postgresql-server
 }
 apt_packages.each do |pkg|
   describe package(pkg) do
@@ -26,6 +27,7 @@ end
 services = %w{
   ufw
   apache2
+  postgresql-server
 }
 services.each do |svc|
   describe service(svc) do
@@ -35,26 +37,37 @@ services.each do |svc|
 end
 
 
-# #{rails_user}ユーザに対してrbenvがインストールされている
-describe file("/home/#{rails_user}/.rbenv") do
+# #{rails_username}ユーザに対してrbenvがインストールされている
+describe file("/home/#{rails_username}/.rbenv") do
   it { should be_directory }
 end
 
 
-# #{rails_user}ユーザに対してrbenvでruby#{ruby_version}がインストールされている
-describe file("/home/#{rails_user}/.rbenv/versions/#{ruby_version}") do
+# #{rails_username}ユーザに対してrbenvでruby#{ruby_version}がインストールされている
+describe file("/home/#{rails_username}/.rbenv/versions/#{ruby_version}") do
   it { should be_directory }
 end
 
 
 # SSHポートが22以外のものに変更されている
-describe file('/etc/ssh/ssh_config') do
-  its(:content) { should match /^Port/ }
-  its(:content) { should_not match /^Port 22$/ }
+describe port(22) do
+  it { should_not be_listening }
+end
+
+
+# http用のポートがlistenされている
+describe port(80) do
+  it { should be_listening }
 end
 
 
 # パスワードでのSSHログインが禁止されている
 describe file('/etc/ssh/ssh_config') do
   its(:content) { should_not match /^PasswordAuthentication yes$/ }
+end
+
+
+# rootユーザへのSSHログインが禁止されている
+describe file('/etc/ssh/sshd_config') do
+  its(:content) { should_not match /^PermitRootLogin yes$/ }
 end
