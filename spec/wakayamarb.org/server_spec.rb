@@ -37,13 +37,13 @@ services.each do |svc|
 end
 
 
-# #{rails_username}ユーザに対してrbenvがインストールされている
+# #{rails_username}ユーザがrbenvがインストールされている
 describe file("/home/#{rails_username}/.rbenv") do
   it { should be_directory }
 end
 
 
-# #{rails_username}ユーザに対してrbenvでruby#{ruby_version}がインストールされている
+# #{rails_username}ユーザがrbenvでruby#{ruby_version}がインストールされている
 describe file("/home/#{rails_username}/.rbenv/versions/#{ruby_version}") do
   it { should be_directory }
 end
